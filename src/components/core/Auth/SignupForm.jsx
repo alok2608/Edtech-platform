@@ -41,6 +41,11 @@ function SignupForm() {
   const handleOnSubmit = (e) => {
     e.preventDefault()
 
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long")
+      return
+    }
+
     if (password !== confirmPassword) {
       toast.error("Passwords Do Not Match")
       return
@@ -148,6 +153,7 @@ function SignupForm() {
               value={password}
               onChange={handleOnChange}
               placeholder="Enter Password"
+              minLength={8}
               className="form-style w-full !pr-10"
             />
             <span
@@ -160,6 +166,9 @@ function SignupForm() {
                 <AiOutlineEye fontSize={24} fill="#AFB2BF" />
               )}
             </span>
+            <p className="mt-1 text-xs text-richblack-300">
+              Must be at least 8 characters
+            </p>
           </label>
           <label className="relative">
             <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
