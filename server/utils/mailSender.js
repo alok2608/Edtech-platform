@@ -1,29 +1,26 @@
-const nodemailer = require("nodemailer")
+const axios = require("axios")
 
 const mailSender = async (email, title, body) => {
   try {
-          
-    let transporter = nodemailer.createTransport({
-      service:"gmail",
-      host: process.env.MAIL_HOST,
-      port:587,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: { email: process.env.MAIL_USER, name: "StudyNotion" },
+        to: [{ email }],
+        subject: title,
+        htmlContent: body,
       },
-      secure: false,
-    })
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    )
 
-    let info = await transporter.sendMail({
-      from: `"Studynotion | CodeHelp" <${process.env.MAIL_USER}>`, // sender address
-      to: `${email}`, // list of receivers
-      subject: `${title}`, // Subject line
-      html: `${body}`, // html body
-    })
-   
-    return info
+    return response.data
   } catch (error) {
-    console.log(error.message)
+    console.log(error.response?.data || error.message)
     return error.message
   }
 }
